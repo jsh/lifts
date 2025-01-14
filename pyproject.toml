@@ -10,7 +10,8 @@ requires-python = ">=3.13"
 dependencies = []
 
 [project.scripts]
-lifts = "lifts:main"
+hello = "lifts:main"
+main = "lifts.lifts:main"
 
 [build-system]
 requires = ["hatchling"]
