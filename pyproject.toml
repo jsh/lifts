@@ -7,7 +7,9 @@ authors = [
     { name = "Jeffrey S. Haemer", email = "jeffrey.haemer@gmail.com" }
 ]
 requires-python = ">=3.13"
-dependencies = []
+dependencies = [
+    "pytest>=8.3.4",
+]
 
 [project.scripts]
 hello = "lifts:main"
