@@ -2,7 +2,7 @@ import sys
 
 import pytest
 
-from lifts.lifts import sequence_length
+from lifts.lifts import USAGE, sequence_length
 
 
 @pytest.fixture
@@ -28,15 +28,15 @@ def test_sequence_length_with_negative_integer(mock_sys_argv, capsys):
     with pytest.raises(SystemExit):
         sequence_length()
     captured = capsys.readouterr()
-    assert captured.err.strip() == "Usage: script_name [N]"
+    assert captured.err.strip() == USAGE
 
 
 def test_sequence_length_with_invalid_argument(mock_sys_argv, capsys):
     mock_sys_argv(["script_name", "abc"])
-    with pytest.raises(ValueError):
+    with pytest.raises(SystemExit):
         sequence_length()
     captured = capsys.readouterr()
-    assert captured.err.strip() == "Usage: script_name [N]"
+    assert captured.err.strip() == USAGE
 
 
 def test_sequence_length_with_too_many_arguments(mock_sys_argv, capsys):
@@ -44,4 +44,4 @@ def test_sequence_length_with_too_many_arguments(mock_sys_argv, capsys):
     with pytest.raises(SystemExit):
         sequence_length()
     captured = capsys.readouterr()
-    assert captured.err.strip() == "Usage: script_name [N]"
+    assert captured.err.strip() == USAGE
