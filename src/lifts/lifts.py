@@ -46,9 +46,20 @@ def random_floats(n: PositiveInt) -> list[float]:
     return [random.random() for _ in range(n)]
 
 
+def print_float_list(float_list: list[float]) -> None:
+    """
+    Print a list of floats with 2-decimal-place accuracy.
+
+    Args:
+        float_list (list[float]): The list of floats to print
+    """
+    formatted_floats = [f"{num:.2f}" for num in float_list]
+    print(formatted_floats)
+
+
 def main() -> None:
     print(f"n = {sequence_length()}")
-    print(random_floats(sequence_length()))
+    print_float_list(random_floats(sequence_length()))
 
 
 if __name__ == "__main__":
