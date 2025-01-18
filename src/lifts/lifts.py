@@ -46,6 +46,20 @@ def random_floats(n: PositiveInt) -> list[float]:
     return [random.random() for _ in range(n)]
 
 
+def is_lift(float_list: list[float]) -> bool:
+    """
+    Return True iff the first element of the list is its smallest
+
+    Args:
+        float_list (list[float]): The list to check
+
+    Returns:
+        bool: True iff the first element is the smallest
+        Empty lists are not lifts.
+    """
+    return float_list and float_list[0] == min(float_list)
+
+
 def print_float_list(float_list: list[float]) -> None:
     """
     Print a list of floats with 2-decimal-place accuracy.
