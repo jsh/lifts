@@ -1,4 +1,7 @@
+import random
 import sys
+
+from pydantic import PositiveInt
 
 USAGE = "usage: sys.argv[0] [sequence_length]"
 
@@ -30,8 +33,22 @@ def sequence_length():
     return n
 
 
+def random_floats(n: PositiveInt) -> list[float]:
+    """
+    Return a list of n random floats between 0 and 1
+
+    Args:
+        n (int): The number of random floats to generate
+
+    Returns:
+        List[float]: The list of random floats
+    """
+    return [random.random() for _ in range(n)]
+
+
 def main() -> None:
     print(f"n = {sequence_length()}")
+    print(random_floats(sequence_length()))
 
 
 if __name__ == "__main__":
