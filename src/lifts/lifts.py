@@ -46,6 +46,17 @@ def random_floats(n: PositiveInt) -> list[float]:
     return [random.random() for _ in range(n)]
 
 
+def print_float_list(float_list: list[float]) -> None:
+    """
+    Print a list of floats with 2-decimal-place accuracy.
+
+    Args:
+        float_list (list[float]): The list of floats to print
+    """
+    formatted_floats = [f"{num:.2f}" for num in float_list]
+    print(formatted_floats)
+
+
 def is_lift(float_list: list[float]) -> bool:
     """
     Return True iff the first element of the list is its smallest
@@ -60,20 +71,44 @@ def is_lift(float_list: list[float]) -> bool:
     return float_list and float_list[0] == min(float_list)
 
 
-def print_float_list(float_list: list[float]) -> None:
+def decompose_into_lifts(float_list: list[float]) -> list[list[float]]:
     """
-    Print a list of floats with 2-decimal-place accuracy.
+    Decompose a list into a list of lists, where each sublist is a run of consecutive increasing numbers,
+    and the first element of each sublist is the smallest element in the sublist.
 
     Args:
-        float_list (list[float]): The list of floats to print
+        float_list (list[float]): The list to decompose
+
+    Returns:
+        list[list[float]]: A list of lists, where each sublist is a run
     """
-    formatted_floats = [f"{num:.2f}" for num in float_list]
-    print(formatted_floats)
+    if not float_list:
+        return []
+
+    runs = []
+    current_run = [float_list[0]]
+    current_run_min = float_list[0]
+
+    for i in range(1, len(float_list)):
+        if float_list[i] > current_run_min:
+            current_run.append(float_list[i])
+            current_run_min = min(current_run_min, float_list[i])
+        else:
+            runs.append(current_run)
+            current_run = [float_list[i]]
+            current_run_min = float_list[i]
+
+    runs.append(current_run)
+    return runs
 
 
 def main() -> None:
-    print(f"n = {sequence_length()}")
-    print_float_list(random_floats(sequence_length()))
+    # print(f"n = {sequence_length()}")
+    list = random_floats(sequence_length())
+    print_float_list(list)
+    lifts = decompose_into_lifts(list)
+    for lift in lifts:
+        print_float_list(lift)
 
 
 if __name__ == "__main__":
