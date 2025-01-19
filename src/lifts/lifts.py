@@ -53,8 +53,7 @@ def print_float_list(float_list: list[float]) -> None:
     Args:
         float_list (list[float]): The list of floats to print
     """
-    formatted_floats = [f"{num:.2f}" for num in float_list]
-    print(formatted_floats)
+    print([f"{num:.2f}" for num in float_list])
 
 
 def is_lift(float_list: list[float]) -> bool:
@@ -69,6 +68,35 @@ def is_lift(float_list: list[float]) -> bool:
         Empty lists are not lifts.
     """
     return float_list and float_list[0] == min(float_list)
+
+
+def color(string: str) -> str:
+    """
+    Return a string with ANSI color codes wrapped around it
+
+    Args:
+        string (str): The string to convert
+
+    Returns:
+        str: The string wrapped in ANSI codes
+    """
+    color = "\033[92m"  # green
+    end = "\033[0m"
+    return f"{color}{string}{end}"
+
+
+def print_lift(float_list: list[float]) -> None:
+    """
+    Print a lift of floats with 2-decimal-place accuracy.
+    Elements are separated by a space.
+    First lift element is in green.
+
+    Args:
+        float_list (list[float]): The list of floats to print
+    """
+    formatted_floats = [f"{num:.2f}" for num in float_list]
+    formatted_floats[0] = color(formatted_floats[0])
+    print(" ".join(map(str, formatted_floats)))
 
 
 def decompose_into_lifts(float_list: list[float]) -> list[list[float]]:
@@ -102,13 +130,17 @@ def decompose_into_lifts(float_list: list[float]) -> list[list[float]]:
     return runs
 
 
+def print_lifts(lifts: list[list[float]]) -> None:
+    for lift in lifts:
+        print_lift(lift)
+
+
 def main() -> None:
     # print(f"n = {sequence_length()}")
     list = random_floats(sequence_length())
     print_float_list(list)
     lifts = decompose_into_lifts(list)
-    for lift in lifts:
-        print_float_list(lift)
+    print_lifts(lifts)
 
 
 if __name__ == "__main__":
