@@ -1,26 +1,17 @@
-import pytest
-
-from lifts.lifts import is_lift, random_floats
-
-
-@pytest.fixture
-def random_lift_list():
-    list = random_floats(10)
-    list[0] = min(list) - 10
-    return list
+from lifts.lifts import is_lift
 
 
 def test_empty_list():
-    assert not is_lift([])
+    assert is_lift([]) is False
 
 
 def test_single_element():
-    assert is_lift([random_floats(10)[0]])
+    assert is_lift([1]) is True
 
 
-def test_first_element_is_smallest(random_lift_list):
-    assert is_lift(random_lift_list)
+def test_first_element_smallest():
+    assert is_lift([1, 2, 3]) is True
 
 
-def test_first_element_is_not_smallest(random_lift_list):
-    assert not is_lift(random_lift_list[1:] + [random_lift_list[0]])
+def test_first_element_not_smallest():
+    assert is_lift([2, 1, 3]) is False

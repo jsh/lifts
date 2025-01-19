@@ -1,30 +1,21 @@
-from lifts.lifts import decompose_into_lifts, random_floats
+from lifts.lifts import decompose_into_lifts
 
 
-def test_empty_list():
+def test_empty_sequence():
     assert decompose_into_lifts([]) == []
 
 
-def test_single_element_list():
-    single_element_list = [random_floats(1)[0]]
-    assert decompose_into_lifts(single_element_list) == [single_element_list]
+def test_single_element_sequence():
+    assert decompose_into_lifts([1]) == [[1]]
 
 
-def test_one_run_of_increasing_numbers():
-    increasing_list = sorted(random_floats(10))
-    assert decompose_into_lifts(increasing_list) == [increasing_list]
+def test_multiple_element_sequence_single_lift():
+    assert decompose_into_lifts([1, 2, 3]) == [[1, 2, 3]]
 
 
-def test_multiple_runs_of_increasing_numbers():
-    # Generate a list with multiple runs of increasing numbers
-    list1 = sorted(random_floats(5))
-    list2 = [min(list1) - 1] + sorted(
-        random_floats(5)
-    )  # so second sublist won't merge with first
-    multiple_runs_list = list1 + list2
-    assert decompose_into_lifts(multiple_runs_list) == [list1, list2]
+def test_multiple_element_sequence_multiple_lifts():
+    assert decompose_into_lifts([1, 2, 3, 0, 4, 5]) == [[1, 2, 3], [0, 4, 5]]
 
 
-def test_decreasing_numbers():
-    decreasing_list = sorted(random_floats(10), reverse=True)
-    assert decompose_into_lifts(decreasing_list) == [[num] for num in decreasing_list]
+def test_sequence_with_negative_numbers():
+    assert decompose_into_lifts([-1, 0, 1, -2, 2, 3]) == [[-1, 0, 1], [-2, 2, 3]]

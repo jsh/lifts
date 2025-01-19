@@ -6,13 +6,13 @@ from pydantic import PositiveInt
 USAGE = "usage: sys.argv[0] [sequence_length]"
 
 
-def sequence_length():
+def sequence_length() -> PositiveInt:
     """
-    Return the sequence length specified as an argument, or 10 if no argument is given.
-    If the argument is not a positive integer, print the usage message and exit.
+    Parse sys.argv and return a PositiveInt.
 
-    Returns:
-        int: The sequence length
+    If the first argument is a PositiveInt, return it.
+    If there are no arguments, return 10.
+    Otherwise, print a usage message to stderr and exit.
     """
     if len(sys.argv) > 2:
         n = -1
@@ -33,41 +33,33 @@ def sequence_length():
     return n
 
 
-def random_floats(n: PositiveInt) -> list[float]:
+def seq(n: PositiveInt) -> list[int]:
     """
-    Return a list of n random floats between 0 and 1
+    Generate a shuffled sequence of integers from 0 to n-1.
 
     Args:
-        n (int): The number of random floats to generate
+        n (PositiveInt): The length of the sequence to generate.
 
     Returns:
-        List[float]: The list of random floats
+        list[int]: A list containing a random permutation of integers from 0 to n-1.
     """
-    return [random.random() for _ in range(n)]
+    s = list(range(n))
+    random.shuffle(s)
+    return s
 
 
-def print_float_list(float_list: list[float]) -> None:
-    """
-    Print a list of floats with 2-decimal-place accuracy.
-
-    Args:
-        float_list (list[float]): The list of floats to print
-    """
-    print([f"{num:.2f}" for num in float_list])
-
-
-def is_lift(float_list: list[float]) -> bool:
+def is_lift(seq: list[float]) -> bool:
     """
     Return True iff the first element of the list is its smallest
 
     Args:
-        float_list (list[float]): The list to check
+        sequence (list[sequence]): The list to check
 
     Returns:
         bool: True iff the first element is the smallest
         Empty lists are not lifts.
     """
-    return float_list and float_list[0] == min(float_list)
+    return seq != [] and seq[0] == min(seq)
 
 
 def color(string: str) -> str:
@@ -85,61 +77,63 @@ def color(string: str) -> str:
     return f"{color}{string}{end}"
 
 
-def print_lift(float_list: list[float]) -> None:
+def format_lift(lift: list[int]) -> None:
     """
-    Print a lift of floats with 2-decimal-place accuracy.
+    Format a lift.
     Elements are separated by a space.
     First lift element is in green.
 
     Args:
-        float_list (list[float]): The list of floats to print
+        lift (list[int]): The list of ints to print
     """
-    formatted_floats = [f"{num:.2f}" for num in float_list]
-    formatted_floats[0] = color(formatted_floats[0])
-    print(" ".join(map(str, formatted_floats)))
+    lift[0] = color(lift[0])
+    return " ".join(map(str, lift))
 
 
-def decompose_into_lifts(float_list: list[float]) -> list[list[float]]:
+def decompose_into_lifts(seq: list[int]) -> list[list[int]]:
     """
-    Decompose a list into a list of lists, where each sublist is a run of consecutive increasing numbers,
-    and the first element of each sublist is the smallest element in the sublist.
+    Decompose a sequence into its component lifts.
+
+    A lift is a sequence of numbers such that the first number is the smallest.
+    The output is a list of such lifts.
 
     Args:
-        float_list (list[float]): The list to decompose
+        seq (list[int]): The sequence to decompose into lifts
 
     Returns:
-        list[list[float]]: A list of lists, where each sublist is a run
+        list[list[int]]: A list of lifts
     """
-    if not float_list:
+    if not seq:
         return []
 
-    runs = []
-    current_run = [float_list[0]]
-    current_run_min = float_list[0]
+    lifts = []
+    current_lift = [seq[0]]
+    current_lift_min = current_lift[0]
 
-    for i in range(1, len(float_list)):
-        if float_list[i] > current_run_min:
-            current_run.append(float_list[i])
-            current_run_min = min(current_run_min, float_list[i])
+    for i in range(1, len(seq)):
+        next = seq[i]
+        if next > current_lift_min:
+            current_lift.append(next)
+            current_lift_min = min(current_lift_min, next)
         else:
-            runs.append(current_run)
-            current_run = [float_list[i]]
-            current_run_min = float_list[i]
+            lifts.append(current_lift)
+            current_lift = [seq[i]]
+            current_lift_min = next
 
-    runs.append(current_run)
-    return runs
+    lifts.append(current_lift)
+    return lifts
 
 
-def print_lifts(lifts: list[list[float]]) -> None:
+def print_lifts(lifts: list[list[int]]) -> None:
     for lift in lifts:
-        print_lift(lift)
+        print(format_lift(lift))
 
 
 def main() -> None:
-    # print(f"n = {sequence_length()}")
-    list = random_floats(sequence_length())
-    print_float_list(list)
-    lifts = decompose_into_lifts(list)
+    print(f"n = {sequence_length()}")
+    sequence = seq(sequence_length())
+    print(sequence)
+    lifts = decompose_into_lifts(sequence)
     print_lifts(lifts)
 
 
