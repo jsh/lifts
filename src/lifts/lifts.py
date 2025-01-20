@@ -1,7 +1,10 @@
 import random
 import sys
+from collections import Counter
+from itertools import permutations
 
 from pydantic import PositiveInt
+from sympy.functions.combinatorial.numbers import stirling
 
 USAGE = "usage: sys.argv[0] [sequence_length]"
 
@@ -129,12 +132,28 @@ def print_lifts(lifts: list[list[int]]) -> None:
         print(format_lift(lift))
 
 
+def count_lifts(n: PositiveInt) -> Counter:
+    lift_counts = Counter()
+
+    for sequence in permutations(range(n)):
+        lifts = decompose_into_lifts(sequence)
+        lift_counts[len(lifts)] += 1
+
+    return lift_counts
+
+
 def main() -> None:
-    print(f"n = {sequence_length()}")
-    sequence = seq(sequence_length())
-    print(sequence)
-    lifts = decompose_into_lifts(sequence)
-    print_lifts(lifts)
+    n = sequence_length()
+    # for sequence in permutations(range(n)):
+    #    print(sequence)
+    #    lifts = decompose_into_lifts(sequence)
+    #    print_lifts(lifts)
+    lift_counts = count_lifts(n)
+    for k, count in lift_counts.items():
+        if count != stirling(n, k, kind=1):
+            print(f"{k}:{count} is not {stirling(n, k, kind=1)}")
+
+    print("same!")
 
 
 if __name__ == "__main__":
