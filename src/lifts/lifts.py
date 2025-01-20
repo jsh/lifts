@@ -128,11 +128,26 @@ def decompose_into_lifts(seq: list[int]) -> list[list[int]]:
 
 
 def print_lifts(lifts: list[list[int]]) -> None:
+    """
+    Print each lift in a list of lifts, with the first element of each lift colored.
+
+    Args:
+        lifts (list[list[int]]): The list of lifts to print.
+    """
     for lift in lifts:
         print(format_lift(lift))
 
 
 def count_lifts(n: PositiveInt) -> Counter:
+    """
+    Count the number of lifts of length k in all permutations of the set of positive integers {1, 2, ..., n}
+
+    Args:
+        n (PositiveInt): The upper limit of the set of positive integers to consider
+
+    Returns:
+        Counter: A Counter mapping each possible length of lift to the number of such lifts in all permutations
+    """
     lift_counts = Counter()
 
     for sequence in permutations(range(n)):
@@ -143,6 +158,17 @@ def count_lifts(n: PositiveInt) -> Counter:
 
 
 def main() -> None:
+    """
+    Main function to execute the lift counting process.
+
+    This function retrieves the sequence length, counts the number of lifts for each
+    possible length in all permutations of integers from 1 to n, and compares these
+    counts to the Stirling numbers of the first kind. Discrepancies are printed out.
+
+    Returns:
+        None
+    """
+
     n = sequence_length()
     # for sequence in permutations(range(n)):
     #    print(sequence)
@@ -151,7 +177,8 @@ def main() -> None:
     lift_counts = count_lifts(n)
     for k, count in lift_counts.items():
         if count != stirling(n, k, kind=1):
-            print(f"{k}:{count} is not {stirling(n, k, kind=1)}")
+            print(f"{k}:{count} is not {stirling(n, k, kind=1)}", sys.stderr)
+            sys.exit()
 
     print("same!")
 
