@@ -2,9 +2,9 @@ import random
 import sys
 from collections import Counter
 from itertools import permutations
+from typing import Iterator, List, Tuple
 
 from pydantic import PositiveInt
-from sympy.functions.combinatorial.numbers import stirling
 
 USAGE = "usage: sys.argv[0] [sequence_length]"
 
@@ -127,6 +127,20 @@ def decompose_into_lifts(seq: list[int]) -> list[list[int]]:
     return lifts
 
 
+def permutation_lifts(lifts: List[int]) -> Iterator[Tuple[List[int], ...]]:
+    """
+    Generate each permutation of a list broken into lifts.
+
+    Args:
+        lifts (List[int]): The list of elements to generate permutations from
+
+    Yields:
+        Tuple[List[int], ...]: A permutation of the input list broken into lifts
+    """
+    for p in permutations(lifts):
+        yield tuple(decompose_into_lifts(p))
+
+
 def print_lifts(lifts: list[list[int]]) -> None:
     """
     Print each lift in a list of lifts, with the first element of each lift colored.
@@ -138,7 +152,7 @@ def print_lifts(lifts: list[list[int]]) -> None:
         print(format_lift(lift))
 
 
-def count_lifts(n: PositiveInt) -> Counter:
+def lift_stats(n: int) -> Counter:
     """
     Count the number of lifts of length k in all permutations of the set of positive integers {1, 2, ..., n}
 
@@ -149,11 +163,26 @@ def count_lifts(n: PositiveInt) -> Counter:
         Counter: A Counter mapping each possible length of lift to the number of such lifts in all permutations
     """
     lift_counts = Counter()
+    lift_lengths = Counter()
+    shortest_lift_counts = Counter()
+    longest_lift_counts = Counter()
+    total = 0
+    for lift_list in permutation_lifts(seq(n)):
+        # print_lifts(lift_list)
+        total += 1
+        lift_counts[len(lift_list)] += 1
+        lift_lengths = [len(lift) for lift in lift_list]
+        shortest_lift_counts[min(lift_lengths)] += 1
+        longest_lift_counts[max(lift_lengths)] += 1
 
-    for sequence in permutations(range(n)):
-        lifts = decompose_into_lifts(sequence)
-        lift_counts[len(lifts)] += 1
-
+    assert (
+        total
+        == lift_counts.total()
+        == shortest_lift_counts.total()
+        == longest_lift_counts.total()
+    )
+    for counter in lift_counts, shortest_lift_counts, longest_lift_counts:
+        print(f"{counter=}")
     return lift_counts
 
 
@@ -170,17 +199,23 @@ def main() -> None:
     """
 
     n = sequence_length()
+    lift_stats(n)
     # for sequence in permutations(range(n)):
     #    print(sequence)
     #    lifts = decompose_into_lifts(sequence)
     #    print_lifts(lifts)
-    lift_counts = count_lifts(n)
-    for k, count in lift_counts.items():
-        if count != stirling(n, k, kind=1):
-            print(f"{k}:{count} is not {stirling(n, k, kind=1)}", sys.stderr)
-            sys.exit()
+    # lift_counts = count_lifts(n)
+    # for k, count in lift_counts.items():
+    #     if count != stirling(n, k, kind=1):
+    #         print(f"{k}:{count} is not {stirling(n, k, kind=1)}", sys.stderr)
+    #         sys.exit()
 
-    print("same!")
+    # print("same!")
+    # decomps = permutation_lifts(seq(n))
+    # for d in decomps:
+    #     # print_lifts(d)
+    #     # print("---")
+    #     lift_stats(d)
 
 
 if __name__ == "__main__":
