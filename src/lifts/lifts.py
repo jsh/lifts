@@ -2,14 +2,110 @@ import random
 import sys
 from collections import Counter
 from itertools import permutations
-from typing import Iterator, List, Tuple
+from math import factorial
+from typing import List
 
-from pydantic import PositiveInt
+# from pydantic import PositiveInt
+# from sympy.functions.combinatorial.numbers import harmonic
 
+DEFAULT_NUMBER_OF_ELEMENTS = 3
 USAGE = "usage: sys.argv[0] [sequence_length]"
 
 
-def sequence_length() -> PositiveInt:
+class Lifts:
+    """
+    Represent a sequence of integers as a sequence of lifts.
+
+    A lift is a sequence of numbers such that the first number is the smallest.
+    The output is a list of such lifts.
+    """
+
+    def __init__(self, ints: List[int]):
+        self.lifts = self.decompose_into_lifts(ints)
+
+    @property
+    def lift_lengths(self) -> Counter:
+        """A Counter mapping each possible length of lift to the number of such lifts in all permutations"""
+        counter = Counter(len(lift) for lift in self.lifts)
+        return Counter(dict(sorted(counter.items())))
+
+    @property
+    def fixed_points(self) -> int:
+        """A Counter mapping each possible length of lift to the number of such lifts in all permutations"""
+        return self.lift_lengths[1]
+
+    @property
+    def lift_count(self) -> int:
+        return len(self.lifts)
+
+    def decompose_into_lifts(self, seq: List[int]) -> List[List[int]]:
+        """
+        Decompose a sequence into its component lifts.
+
+        A lift is a sequence of numbers such that the first number is the smallest.
+        The output is a list of such lifts.
+
+        Args:
+            seq (list[int]): The sequence to decompose into lifts
+
+        Returns:
+            list[list[int]]: A list of lifts
+        """
+        if not seq:
+            return []
+
+        lifts = []
+        current_lift = [seq[0]]
+        current_lift_min = current_lift[0]
+
+        for i in range(1, len(seq)):
+            next_ = seq[i]
+            if next_ > current_lift_min:
+                current_lift.append(next_)
+                current_lift_min = min(current_lift_min, next_)
+            else:
+                lifts.append(current_lift)
+                current_lift = [seq[i]]
+                current_lift_min = next_
+
+        lifts.append(current_lift)
+        return lifts
+
+    def print_lifts(self) -> None:
+        """
+        Print each lift in the list of lifts, with the first element of each lift colored.
+        """
+        for lift in self.lifts:
+            print(self.format_lift(lift))
+
+    def format_lift(self, lift: list[int]) -> str:
+        """
+        Format a lift.
+        Elements are separated by a space.
+        First lift element is in green.
+
+        Args:
+            lift (list[int]): The list of ints to print
+        """
+        lift[0] = self.color(lift[0])
+        return " ".join(map(str, lift))
+
+    def color(self, string: str) -> str:
+        """
+        Return a string with ANSI color codes wrapped around it
+
+        Args:
+            string (str): The string to convert
+
+        Returns:
+            str: The string wrapped in ANSI codes
+        """
+        color = "\033[92m"  # green
+        end = "\033[0m"
+        return f"{color}{string}{end}"
+
+
+def number_of_elements() -> int:
     """
     Parse sys.argv and return a PositiveInt.
 
@@ -20,7 +116,7 @@ def sequence_length() -> PositiveInt:
     if len(sys.argv) > 2:
         n = -1
     elif len(sys.argv) == 1:
-        n = 10
+        n = DEFAULT_NUMBER_OF_ELEMENTS
     else:
         try:
             n = int(sys.argv[1])
@@ -36,7 +132,8 @@ def sequence_length() -> PositiveInt:
     return n
 
 
-def seq(n: PositiveInt) -> list[int]:
+# def seq(n: PositiveInt) -> list[int]:
+def seq(n: int) -> list[int]:
     """
     Generate a shuffled sequence of integers from 0 to n-1.
 
@@ -51,141 +148,6 @@ def seq(n: PositiveInt) -> list[int]:
     return s
 
 
-def is_lift(seq: list[float]) -> bool:
-    """
-    Return True iff the first element of the list is its smallest
-
-    Args:
-        sequence (list[sequence]): The list to check
-
-    Returns:
-        bool: True iff the first element is the smallest
-        Empty lists are not lifts.
-    """
-    return seq != [] and seq[0] == min(seq)
-
-
-def color(string: str) -> str:
-    """
-    Return a string with ANSI color codes wrapped around it
-
-    Args:
-        string (str): The string to convert
-
-    Returns:
-        str: The string wrapped in ANSI codes
-    """
-    color = "\033[92m"  # green
-    end = "\033[0m"
-    return f"{color}{string}{end}"
-
-
-def format_lift(lift: list[int]) -> None:
-    """
-    Format a lift.
-    Elements are separated by a space.
-    First lift element is in green.
-
-    Args:
-        lift (list[int]): The list of ints to print
-    """
-    lift[0] = color(lift[0])
-    return " ".join(map(str, lift))
-
-
-def decompose_into_lifts(seq: list[int]) -> list[list[int]]:
-    """
-    Decompose a sequence into its component lifts.
-
-    A lift is a sequence of numbers such that the first number is the smallest.
-    The output is a list of such lifts.
-
-    Args:
-        seq (list[int]): The sequence to decompose into lifts
-
-    Returns:
-        list[list[int]]: A list of lifts
-    """
-    if not seq:
-        return []
-
-    lifts = []
-    current_lift = [seq[0]]
-    current_lift_min = current_lift[0]
-
-    for i in range(1, len(seq)):
-        next = seq[i]
-        if next > current_lift_min:
-            current_lift.append(next)
-            current_lift_min = min(current_lift_min, next)
-        else:
-            lifts.append(current_lift)
-            current_lift = [seq[i]]
-            current_lift_min = next
-
-    lifts.append(current_lift)
-    return lifts
-
-
-def permutation_lifts(lifts: List[int]) -> Iterator[Tuple[List[int], ...]]:
-    """
-    Generate each permutation of a list broken into lifts.
-
-    Args:
-        lifts (List[int]): The list of elements to generate permutations from
-
-    Yields:
-        Tuple[List[int], ...]: A permutation of the input list broken into lifts
-    """
-    for p in permutations(lifts):
-        yield tuple(decompose_into_lifts(p))
-
-
-def print_lifts(lifts: list[list[int]]) -> None:
-    """
-    Print each lift in a list of lifts, with the first element of each lift colored.
-
-    Args:
-        lifts (list[list[int]]): The list of lifts to print.
-    """
-    for lift in lifts:
-        print(format_lift(lift))
-
-
-def lift_stats(n: int) -> Counter:
-    """
-    Count the number of lifts of length k in all permutations of the set of positive integers {1, 2, ..., n}
-
-    Args:
-        n (PositiveInt): The upper limit of the set of positive integers to consider
-
-    Returns:
-        Counter: A Counter mapping each possible length of lift to the number of such lifts in all permutations
-    """
-    lift_counts = Counter()
-    lift_lengths = Counter()
-    shortest_lift_counts = Counter()
-    longest_lift_counts = Counter()
-    total = 0
-    for lift_list in permutation_lifts(seq(n)):
-        # print_lifts(lift_list)
-        total += 1
-        lift_counts[len(lift_list)] += 1
-        lift_lengths = [len(lift) for lift in lift_list]
-        shortest_lift_counts[min(lift_lengths)] += 1
-        longest_lift_counts[max(lift_lengths)] += 1
-
-    assert (
-        total
-        == lift_counts.total()
-        == shortest_lift_counts.total()
-        == longest_lift_counts.total()
-    )
-    for counter in lift_counts, shortest_lift_counts, longest_lift_counts:
-        print(f"{counter=}")
-    return lift_counts
-
-
 def main() -> None:
     """
     Main function to execute the lift counting process.
@@ -198,10 +160,31 @@ def main() -> None:
         None
     """
 
-    n = sequence_length()
-    lift_stats(n)
-    # for sequence in permutations(range(n)):
-    #    print(sequence)
+    n = number_of_elements()
+    number_of_lifts = Counter()
+    lift_lengths = Counter()
+    fixed_points = 0
+    # lift_stats(n)
+    for sequence in permutations(range(n)):
+        lifts = Lifts(sequence)
+        lifts.print_lifts()
+        print("---")
+        number_of_lifts[lifts.lift_count] += 1
+        lift_lengths += lifts.lift_lengths
+        fixed_points += lifts.fixed_points
+
+    lift_lengths = Counter(dict(sorted(lift_lengths.items())))
+    number_of_lifts = Counter(dict(sorted(number_of_lifts.items())))
+    print(f"{lift_lengths=}"), print(f"{number_of_lifts=}")
+
+    total_lift_length = sum(key * value for key, value in lift_lengths.items())
+    # total_lifts = sum(key * value for key, value in number_of_lifts.items())
+
+    n_fact = factorial(n)
+    # n_harmonic = harmonic(n)
+    print(f"{total_lift_length=}, {n_fact * n}")
+    # print(f" {total_lifts=}, {n_fact * n_harmonic}")
+
     #    lifts = decompose_into_lifts(sequence)
     #    print_lifts(lifts)
     # lift_counts = count_lifts(n)
@@ -209,13 +192,6 @@ def main() -> None:
     #     if count != stirling(n, k, kind=1):
     #         print(f"{k}:{count} is not {stirling(n, k, kind=1)}", sys.stderr)
     #         sys.exit()
-
-    # print("same!")
-    # decomps = permutation_lifts(seq(n))
-    # for d in decomps:
-    #     # print_lifts(d)
-    #     # print("---")
-    #     lift_stats(d)
 
 
 if __name__ == "__main__":
