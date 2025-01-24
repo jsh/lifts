@@ -5,8 +5,8 @@ from itertools import permutations
 from math import factorial
 from typing import List
 
-# from pydantic import PositiveInt
-# from sympy.functions.combinatorial.numbers import harmonic
+from pydantic import PositiveInt
+from sympy.functions.combinatorial.numbers import harmonic
 
 DEFAULT_NUMBER_OF_ELEMENTS = 3
 USAGE = "usage: sys.argv[0] [sequence_length]"
@@ -30,12 +30,12 @@ class Lifts:
         return Counter(dict(sorted(counter.items())))
 
     @property
-    def fixed_points(self) -> int:
+    def fixed_points(self) -> PositiveInt:
         """A Counter mapping each possible length of lift to the number of such lifts in all permutations"""
         return self.lift_lengths[1]
 
     @property
-    def lift_count(self) -> int:
+    def lift_count(self) -> PositiveInt:
         return len(self.lifts)
 
     def decompose_into_lifts(self, seq: List[int]) -> List[List[int]]:
@@ -105,7 +105,7 @@ class Lifts:
         return f"{color}{string}{end}"
 
 
-def number_of_elements() -> int:
+def number_of_elements() -> PositiveInt:
     """
     Parse sys.argv and return a PositiveInt.
 
@@ -132,8 +132,7 @@ def number_of_elements() -> int:
     return n
 
 
-# def seq(n: PositiveInt) -> list[int]:
-def seq(n: int) -> list[int]:
+def seq(n: PositiveInt) -> list[int]:
     """
     Generate a shuffled sequence of integers from 0 to n-1.
 
@@ -178,12 +177,12 @@ def main() -> None:
     print(f"{lift_lengths=}"), print(f"{number_of_lifts=}")
 
     total_lift_length = sum(key * value for key, value in lift_lengths.items())
-    # total_lifts = sum(key * value for key, value in number_of_lifts.items())
+    total_lifts = sum(key * value for key, value in number_of_lifts.items())
 
     n_fact = factorial(n)
-    # n_harmonic = harmonic(n)
+    n_harmonic = harmonic(n)
     print(f"{total_lift_length=}, {n_fact * n}")
-    # print(f" {total_lifts=}, {n_fact * n_harmonic}")
+    print(f" {total_lifts=}, {n_fact * n_harmonic}")
 
     #    lifts = decompose_into_lifts(sequence)
     #    print_lifts(lifts)
