@@ -1,4 +1,4 @@
-from lifts.lifts import seq
+from lifts.utils import seq
 
 
 def test_length():

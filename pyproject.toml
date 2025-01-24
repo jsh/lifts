@@ -15,7 +15,7 @@ dependencies = [
 
 [project.scripts]
 hello = "lifts:main"
-main = "lifts.lifts:main"
+main = "lifts.utils:main"
 
 [build-system]
 requires = ["hatchling"]
