@@ -1,5 +1,4 @@
 import pprint
-import random
 import sys
 from collections import Counter
 from itertools import permutations
@@ -39,21 +38,6 @@ def number_of_elements() -> PositiveInt:
         sys.exit()
 
     return n
-
-
-def seq(n: PositiveInt) -> list[int]:
-    """
-    Generate a shuffled sequence of integers from 0 to n-1.
-
-    Args:
-        n (PositiveInt): The length of the sequence to generate.
-
-    Returns:
-        list[int]: A list containing a random permutation of integers from 0 to n-1.
-    """
-    s = list(range(n))
-    random.shuffle(s)
-    return s
 
 
 def main() -> None:
