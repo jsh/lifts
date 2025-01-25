@@ -1,7 +1,7 @@
 from collections import Counter
 from typing import List
 
-from pydantic import PositiveInt
+from pydantic import NonNegativeInt, PositiveInt
 
 
 class Lifts:
@@ -13,21 +13,44 @@ class Lifts:
     """
 
     def __init__(self, ints: List[int]):
+        """
+        Initialize a Lifts instance.
+
+        Args:
+            ints: A list of ints to decompose into lifts.
+        """
         self.lifts = self.decompose_into_lifts(ints)
 
     @property
     def lift_lengths(self) -> Counter:
-        """A Counter mapping each possible length of lift to the number of such lifts in all permutations"""
+        """
+        Compute the lengths of each lift in the list of lifts.
+
+        Returns:
+            Counter: A Counter object where keys are the lengths of the lifts and
+            values are the frequency of each length, sorted by length.
+        """
         counter = Counter(len(lift) for lift in self.lifts)
         return Counter(dict(sorted(counter.items())))
 
     @property
-    def fixed_points(self) -> PositiveInt:
-        """A Counter mapping each possible length of lift to the number of such lifts in all permutations"""
+    def fixed_points(self) -> NonNegativeInt:
+        """
+        The number of lifts which are a single element, i.e., are fixed points.
+
+        Returns:
+            PositiveInt: The number of lifts which are a single element.
+        """
         return self.lift_lengths[1]
 
     @property
     def lift_count(self) -> PositiveInt:
+        """
+        The number of lifts in the list of lifts.
+
+        Returns:
+            PositiveInt: The number of lifts in the list of lifts.
+        """
         return len(self.lifts)
 
     def decompose_into_lifts(self, seq: List[int]) -> List[List[int]]:
@@ -65,7 +88,10 @@ class Lifts:
 
     def print_lifts(self) -> None:
         """
-        Print each lift in the list of lifts, with the first element of each lift colored.
+        Print all lifts in the list of lifts.
+
+        Each lift is printed on its own line, with elements separated by a
+        space. The first element of each lift is formatted in green.
         """
         for lift in self.lifts:
             print(self.format_lift(lift))
@@ -84,13 +110,13 @@ class Lifts:
 
     def color(self, string: str) -> str:
         """
-        Return a string with ANSI color codes wrapped around it
+        Color a string (currently, green only).
 
         Args:
             string (str): The string to convert
 
         Returns:
-            str: The string wrapped in ANSI codes
+            str: The string wrapped in ANSI codes to color it
         """
         color = "\033[92m"  # green
         end = "\033[0m"

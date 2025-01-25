@@ -1,3 +1,4 @@
+import pprint
 import random
 import sys
 from collections import Counter
@@ -17,8 +18,8 @@ def number_of_elements() -> PositiveInt:
     """
     Parse sys.argv and return a PositiveInt.
 
-    If the first argument is a PositiveInt, return it.
-    If there are no arguments, return 10.
+    If the only argument is a PositiveInt, return it.
+    If there are no arguments, return DEFAULT_NUMBER_OF_ELEMENTS.
     Otherwise, print a usage message to stderr and exit.
     """
     if len(sys.argv) > 2:
@@ -80,9 +81,8 @@ def main() -> None:
         lift_lengths += lifts.lift_lengths
         fixed_points += lifts.fixed_points
 
-    lift_lengths = Counter(dict(sorted(lift_lengths.items())))
-    number_of_lifts = Counter(dict(sorted(number_of_lifts.items())))
-    print(f"{lift_lengths=}"), print(f"{number_of_lifts=}")
+    pprint.pprint(f"{lift_lengths=}, {fixed_points=}")
+    pprint.pprint(f"{dict(sorted(number_of_lifts.items()))=}")
 
     total_lift_length = sum(key * value for key, value in lift_lengths.items())
     total_lifts = sum(key * value for key, value in number_of_lifts.items())
@@ -92,9 +92,6 @@ def main() -> None:
     print(f"{total_lift_length=}, {n_fact * n}")
     print(f" {total_lifts=}, {n_fact * n_harmonic}")
 
-    #    lifts = decompose_into_lifts(sequence)
-    #    print_lifts(lifts)
-    # lift_counts = count_lifts(n)
     # for k, count in lift_counts.items():
     #     if count != stirling(n, k, kind=1):
     #         print(f"{k}:{count} is not {stirling(n, k, kind=1)}", sys.stderr)
