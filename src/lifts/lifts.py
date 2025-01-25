@@ -105,6 +105,8 @@ class Lifts:
         Args:
             lift (list[int]): The list of ints to print
         """
+        if not lift:
+            return ""
         lift[0] = self.color(lift[0])
         return " ".join(map(str, lift))
 
