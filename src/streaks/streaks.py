@@ -12,14 +12,14 @@ class Streaks:
     The output is a list of such streaks.
     """
 
-    def __init__(self, ints: List[int], reverse: bool = False):
+    def __init__(self, ints: List[int], losing: bool = False):
         """
         Initialize a Lifts instance.
 
         Args:
             ints: A list of ints to decompose into streaks.
         """
-        self.streaks = self.decompose_into_streaks(ints, reverse)
+        self.streaks = self.decompose_into_streaks(ints, losing)
 
     @property
     def streak_lengths(self) -> Counter:
@@ -54,21 +54,22 @@ class Streaks:
         return len(self.streaks)
 
     def decompose_into_streaks(
-        self, seq: List[int], reverse: bool = False
+        self, seq: List[int], losing: bool = False
     ) -> List[List[int]]:
         """
-        Decompose a sequence into its component streaks/drops.
+        Decompose a sequence into its component streaks.
 
         A streak is a sequence of numbers such that the first number is the smallest.
         The output is a list of such streaks.
-        If reverse is True, the sequence will be decomposed into drops,
-        i.e., the first number will be the largest. (Default is False.)
+        If losing is True, the sequence will be decomposed into losing streaks,
+        i.e., the first number will be the largest. (Default is False, as in English.
+        "He's on a streak." is normally taken to mean "He's on a winning streak.")
 
         Args:
-            seq (list[int]): The sequence to decompose into streaks/drops
+            seq (list[int]): The sequence to decompose into streaks
 
         Returns:
-            list[list[int]]: A list of streaks/drops
+            list[list[int]]: A list of streaks
         """
         if not seq:
             return []
@@ -79,8 +80,8 @@ class Streaks:
 
         for i in range(1, len(seq)):
             next_ = seq[i]
-            if ((not reverse) and (next_ > current_streak_start)) or (
-                reverse and (next_ < current_streak_start)
+            if ((not losing) and (next_ > current_streak_start)) or (
+                losing and (next_ < current_streak_start)
             ):
                 current_streak.append(next_)
             else:

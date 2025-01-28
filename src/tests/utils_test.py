@@ -2,7 +2,7 @@ import sys
 
 import pytest
 
-from lifts.utils import DEFAULT_NUMBER_OF_ELEMENTS, USAGE, number_of_elements
+from streaks.utils import DEFAULT_NUMBER_OF_ELEMENTS, USAGE, number_of_elements
 
 
 @pytest.fixture

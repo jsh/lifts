@@ -7,7 +7,7 @@ from math import factorial
 from pydantic import PositiveInt
 from sympy.functions.combinatorial.numbers import harmonic
 
-from .lifts import Streaks
+from .streaks import Streaks
 
 DEFAULT_NUMBER_OF_ELEMENTS = 3
 USAGE = "usage: sys.argv[0] [sequence_length]"
