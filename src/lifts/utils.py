@@ -7,7 +7,7 @@ from math import factorial
 from pydantic import PositiveInt
 from sympy.functions.combinatorial.numbers import harmonic
 
-from .lifts import Lifts
+from .lifts import Streaks
 
 DEFAULT_NUMBER_OF_ELEMENTS = 3
 USAGE = "usage: sys.argv[0] [sequence_length]"
@@ -42,9 +42,9 @@ def number_of_elements() -> PositiveInt:
 
 def main() -> None:
     """
-    Main function to execute the lift counting process.
+    Main function to execute the streak counting process.
 
-    This function retrieves the sequence length, counts the number of lifts for each
+    This function retrieves the sequence length, counts the number of streaks for each
     possible length in all permutations of integers from 1 to n, and compares these
     counts to the Stirling numbers of the first kind. Discrepancies are printed out.
 
@@ -53,30 +53,30 @@ def main() -> None:
     """
 
     n = number_of_elements()
-    number_of_lifts = Counter()
-    lift_lengths = Counter()
+    number_of_streaks = Counter()
+    streak_lengths = Counter()
     fixed_points = 0
-    # lift_stats(n)
+    # streak_stats(n)
     for sequence in permutations(range(n)):
-        lifts = Lifts(sequence)
-        lifts.print_lifts()
+        streaks = Streaks(sequence)
+        streaks.print_streaks()
         print("---")
-        number_of_lifts[lifts.lift_count] += 1
-        lift_lengths += lifts.lift_lengths
-        fixed_points += lifts.fixed_points
+        number_of_streaks[streaks.streak_count] += 1
+        streak_lengths += streaks.streak_lengths
+        fixed_points += streaks.fixed_points
 
-    pprint.pprint(f"{lift_lengths=}, {fixed_points=}")
-    pprint.pprint(f"{dict(sorted(number_of_lifts.items()))=}")
+    pprint.pprint(f"{streak_lengths=}, {fixed_points=}")
+    pprint.pprint(f"{dict(sorted(number_of_streaks.items()))=}")
 
-    total_lift_length = sum(key * value for key, value in lift_lengths.items())
-    total_lifts = sum(key * value for key, value in number_of_lifts.items())
+    total_streak_length = sum(key * value for key, value in streak_lengths.items())
+    total_streaks = sum(key * value for key, value in number_of_streaks.items())
 
     n_fact = factorial(n)
     n_harmonic = harmonic(n)
-    print(f"{total_lift_length=}, {n_fact * n}")
-    print(f" {total_lifts=}, {n_fact * n_harmonic}")
+    print(f"{total_streak_length=}, {n_fact * n}")
+    print(f" {total_streaks=}, {n_fact * n_harmonic}")
 
-    # for k, count in lift_counts.items():
+    # for k, count in streak_counts.items():
     #     if count != stirling(n, k, kind=1):
     #         print(f"{k}:{count} is not {stirling(n, k, kind=1)}", sys.stderr)
     #         sys.exit()

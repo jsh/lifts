@@ -4,12 +4,12 @@ from typing import List
 from pydantic import NonNegativeInt, PositiveInt
 
 
-class Lifts:
+class Streaks:
     """
-    Represent a sequence of integers as a sequence of lifts.
+    Represent a sequence of integers as a sequence of streaks.
 
-    A lift is a sequence of numbers such that the first number is the smallest.
-    The output is a list of such lifts.
+    A streak is a sequence of numbers such that the first number is the smallest.
+    The output is a list of such streaks.
     """
 
     def __init__(self, ints: List[int], reverse: bool = False):
@@ -17,103 +17,103 @@ class Lifts:
         Initialize a Lifts instance.
 
         Args:
-            ints: A list of ints to decompose into lifts.
+            ints: A list of ints to decompose into streaks.
         """
-        self.lifts = self.decompose_into_lifts(ints, reverse)
+        self.streaks = self.decompose_into_streaks(ints, reverse)
 
     @property
-    def lift_lengths(self) -> Counter:
+    def streak_lengths(self) -> Counter:
         """
-        Compute the lengths of each lift in the list of lifts.
+        Compute the lengths of each streak in the list of streaks.
 
         Returns:
-            Counter: A Counter object where keys are the lengths of the lifts and
+            Counter: A Counter object where keys are the lengths of the streaks and
             values are the frequency of each length, sorted by length.
         """
-        counter = Counter(len(lift) for lift in self.lifts)
+        counter = Counter(len(streak) for streak in self.streaks)
         return Counter(dict(sorted(counter.items())))
 
     @property
     def fixed_points(self) -> NonNegativeInt:
         """
-        The number of lifts which are a single element, i.e., are fixed points.
+        The number of streaks which are a single element, i.e., are fixed points.
 
         Returns:
-            PositiveInt: The number of lifts which are a single element.
+            PositiveInt: The number of streaks which are a single element.
         """
-        return self.lift_lengths[1]
+        return self.streak_lengths[1]
 
     @property
-    def lift_count(self) -> PositiveInt:
+    def streak_count(self) -> PositiveInt:
         """
-        The number of lifts in the list of lifts.
+        The number of streaks in the list of streaks.
 
         Returns:
-            PositiveInt: The number of lifts in the list of lifts.
+            PositiveInt: The number of streaks in the list of streaks.
         """
-        return len(self.lifts)
+        return len(self.streaks)
 
-    def decompose_into_lifts(
+    def decompose_into_streaks(
         self, seq: List[int], reverse: bool = False
     ) -> List[List[int]]:
         """
-        Decompose a sequence into its component lifts/drops.
+        Decompose a sequence into its component streaks/drops.
 
-        A lift is a sequence of numbers such that the first number is the smallest.
-        The output is a list of such lifts.
+        A streak is a sequence of numbers such that the first number is the smallest.
+        The output is a list of such streaks.
         If reverse is True, the sequence will be decomposed into drops,
         i.e., the first number will be the largest. (Default is False.)
 
         Args:
-            seq (list[int]): The sequence to decompose into lifts/drops
+            seq (list[int]): The sequence to decompose into streaks/drops
 
         Returns:
-            list[list[int]]: A list of lifts/drops
+            list[list[int]]: A list of streaks/drops
         """
         if not seq:
             return []
 
-        lifts = []
-        current_lift = [seq[0]]
-        current_lift_start = current_lift[0]
+        streaks = []
+        current_streak = [seq[0]]
+        current_streak_start = current_streak[0]
 
         for i in range(1, len(seq)):
             next_ = seq[i]
-            if ((not reverse) and (next_ > current_lift_start)) or (
-                reverse and (next_ < current_lift_start)
+            if ((not reverse) and (next_ > current_streak_start)) or (
+                reverse and (next_ < current_streak_start)
             ):
-                current_lift.append(next_)
+                current_streak.append(next_)
             else:
-                lifts.append(current_lift)
-                current_lift = [next_]
-                current_lift_start = next_
+                streaks.append(current_streak)
+                current_streak = [next_]
+                current_streak_start = next_
 
-        lifts.append(current_lift)
-        return lifts
+        streaks.append(current_streak)
+        return streaks
 
-    def print_lifts(self) -> None:
+    def print_streaks(self) -> None:
         """
-        Print all lifts in the list of lifts.
+        Print all streaks in the list of streaks.
 
-        Each lift is printed on its own line, with elements separated by a
-        space. The first element of each lift is formatted in green.
+        Each streak is printed on its own line, with elements separated by a
+        space. The first element of each streak is formatted in green.
         """
-        for lift in self.lifts:
-            print(self.format_lift(lift))
+        for streak in self.streaks:
+            print(self.format_streak(streak))
 
-    def format_lift(self, lift: list[int]) -> str:
+    def format_streak(self, streak: list[int]) -> str:
         """
-        Format a lift.
+        Format a streak.
         Elements are separated by a space.
-        First lift element is in green.
+        First streak element is in green.
 
         Args:
-            lift (list[int]): The list of ints to print
+            streak (list[int]): The list of ints to print
         """
-        if not lift:
+        if not streak:
             return ""
-        lift[0] = self.color(lift[0])
-        return " ".join(map(str, lift))
+        streak[0] = self.color(streak[0])
+        return " ".join(map(str, streak))
 
     def color(self, string: str) -> str:
         """
