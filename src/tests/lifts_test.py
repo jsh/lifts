@@ -20,16 +20,22 @@ def test_single_element_list():
 def test_ascending_list():
     instance = Lifts([1, 2, 3, 4, 5])
     assert instance.lifts == [[1, 2, 3, 4, 5]]
+    instance2 = Lifts([1, 2, 3, 4, 5], reverse=True)
+    assert instance2.lifts == [[1], [2], [3], [4], [5]]
 
 
 def test_descending_list():
     instance = Lifts([5, 4, 3, 2, 1])
     assert instance.lifts == [[5], [4], [3], [2], [1]]
+    instance = Lifts([5, 4, 3, 2, 1], reverse=True)
+    assert instance.lifts == [[5, 4, 3, 2, 1]]
 
 
 def test_random_list():
     instance = Lifts([3, 1, 4, 2, 5])
     assert instance.lifts == [[3], [1, 4, 2, 5]]
+    instance = Lifts([3, 1, 4, 2, 5], reverse=True)
+    assert instance.lifts == [[3, 1], [4, 2], [5]]
 
 
 # test lift_lengths property

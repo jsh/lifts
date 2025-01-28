@@ -12,14 +12,14 @@ class Lifts:
     The output is a list of such lifts.
     """
 
-    def __init__(self, ints: List[int]):
+    def __init__(self, ints: List[int], reverse: bool = False):
         """
         Initialize a Lifts instance.
 
         Args:
             ints: A list of ints to decompose into lifts.
         """
-        self.lifts = self.decompose_into_lifts(ints)
+        self.lifts = self.decompose_into_lifts(ints, reverse)
 
     @property
     def lift_lengths(self) -> Counter:
@@ -53,35 +53,40 @@ class Lifts:
         """
         return len(self.lifts)
 
-    def decompose_into_lifts(self, seq: List[int]) -> List[List[int]]:
+    def decompose_into_lifts(
+        self, seq: List[int], reverse: bool = False
+    ) -> List[List[int]]:
         """
-        Decompose a sequence into its component lifts.
+        Decompose a sequence into its component lifts/drops.
 
         A lift is a sequence of numbers such that the first number is the smallest.
         The output is a list of such lifts.
+        If reverse is True, the sequence will be decomposed into drops,
+        i.e., the first number will be the largest. (Default is False.)
 
         Args:
-            seq (list[int]): The sequence to decompose into lifts
+            seq (list[int]): The sequence to decompose into lifts/drops
 
         Returns:
-            list[list[int]]: A list of lifts
+            list[list[int]]: A list of lifts/drops
         """
         if not seq:
             return []
 
         lifts = []
         current_lift = [seq[0]]
-        current_lift_min = current_lift[0]
+        current_lift_start = current_lift[0]
 
         for i in range(1, len(seq)):
             next_ = seq[i]
-            if next_ > current_lift_min:
+            if ((not reverse) and (next_ > current_lift_start)) or (
+                reverse and (next_ < current_lift_start)
+            ):
                 current_lift.append(next_)
-                current_lift_min = min(current_lift_min, next_)
             else:
                 lifts.append(current_lift)
-                current_lift = [seq[i]]
-                current_lift_min = next_
+                current_lift = [next_]
+                current_lift_start = next_
 
         lifts.append(current_lift)
         return lifts
