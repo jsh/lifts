@@ -20,21 +20,21 @@ def test_single_element_list():
 def test_ascending_list():
     instance = Streaks([1, 2, 3, 4, 5])
     assert instance.streaks == [[1, 2, 3, 4, 5]]
-    instance2 = Streaks([1, 2, 3, 4, 5], losing=True)
+    instance2 = Streaks([1, 2, 3, 4, 5], winning=False)
     assert instance2.streaks == [[1], [2], [3], [4], [5]]
 
 
 def test_descending_list():
     instance = Streaks([5, 4, 3, 2, 1])
     assert instance.streaks == [[5], [4], [3], [2], [1]]
-    instance = Streaks([5, 4, 3, 2, 1], losing=True)
+    instance = Streaks([5, 4, 3, 2, 1], winning=False)
     assert instance.streaks == [[5, 4, 3, 2, 1]]
 
 
 def test_random_list():
     instance = Streaks([3, 1, 4, 2, 5])
     assert instance.streaks == [[3], [1, 4, 2, 5]]
-    instance = Streaks([3, 1, 4, 2, 5], losing=True)
+    instance = Streaks([3, 1, 4, 2, 5], winning=False)
     assert instance.streaks == [[3, 1], [4, 2], [5]]
 
 

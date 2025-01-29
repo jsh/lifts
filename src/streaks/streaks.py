@@ -13,14 +13,14 @@ class Streaks:
     The output is a list of such streaks.
     """
 
-    def __init__(self, ints: List[int], losing: bool = False):
+    def __init__(self, ints: List[int], winning: bool = True):
         """
-        Initialize a Lifts instance.
+        Initialize a Streaks instance.
 
         Args:
             ints: A list of ints to decompose into streaks.
         """
-        self.streaks = self.decompose_into_streaks(ints, losing)
+        self.streaks = self.decompose_into_streaks(ints, winning)
 
     @property
     def streak_lengths(self) -> Counter:
@@ -55,15 +55,16 @@ class Streaks:
         return len(self.streaks)
 
     def decompose_into_streaks(
-        self, seq: List[int], losing: bool = False
+        self, seq: List[int], winning: bool = True
     ) -> List[List[int]]:
         """
         Decompose a sequence into its component streaks.
 
-        A streak is a sequence of numbers such that the first number is the smallest.
+        A streak is a sequence of numbers such that the first number is
+        the smallest (winning) or largest (losing).
         The output is a list of such streaks.
-        If losing is True, the sequence will be decomposed into losing streaks,
-        i.e., the first number will be the largest. (Default is False, as in English.
+        If winning is False, the sequence will be decomposed into losing streaks,
+        i.e., the first number will be the largest. (Default is True, as in English.
         "He's on a streak." is normally taken to mean "He's on a winning streak.")
 
         Args:
@@ -73,10 +74,10 @@ class Streaks:
             list[list[int]]: A list of streaks
         """
 
-        if losing:
-            cmp = lt
-        else:
+        if winning:
             cmp = gt
+        else:
+            cmp = lt
 
         if not seq:
             return []
