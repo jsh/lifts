@@ -1,4 +1,5 @@
 from collections import Counter
+from operator import gt, lt
 from typing import List
 
 from pydantic import NonNegativeInt, PositiveInt
@@ -71,6 +72,12 @@ class Streaks:
         Returns:
             list[list[int]]: A list of streaks
         """
+
+        if losing:
+            cmp = lt
+        else:
+            cmp = gt
+
         if not seq:
             return []
 
@@ -80,9 +87,7 @@ class Streaks:
 
         for i in range(1, len(seq)):
             next_ = seq[i]
-            if ((not losing) and (next_ > current_streak_start)) or (
-                losing and (next_ < current_streak_start)
-            ):
+            if cmp(next_, current_streak_start):
                 current_streak.append(next_)
             else:
                 streaks.append(current_streak)
