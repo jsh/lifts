@@ -2,7 +2,7 @@ from collections import Counter
 from operator import gt, lt
 from typing import List
 
-from pydantic import NonNegativeInt, PositiveInt
+from pydantic import NonNegativeInt
 
 
 class Streaks:
@@ -13,17 +13,18 @@ class Streaks:
     The output is a list of such streaks.
     """
 
-    def __init__(self, ints: List[int], winning: bool = True):
+    def __init__(self, sequence: List[int], winning: bool = True) -> None:
         """
         Initialize a Streaks instance.
 
         Args:
-            ints: A list of ints to decompose into streaks.
+            sequence (List[int]): A list of ints to decompose into streaks.
+            winning (bool, optional): Whether to decompose into winning or losing streaks. Defaults to True.
         """
-        self.streaks = self.decompose_into_streaks(ints, winning)
+        self.streaks = self.decompose_into_streaks(sequence, winning)
 
     @property
-    def streak_lengths(self) -> Counter:
+    def streak_lengths_counter(self) -> Counter:
         """
         Compute the lengths of each streak in the list of streaks.
 
@@ -31,26 +32,27 @@ class Streaks:
             Counter: A Counter object where keys are the lengths of the streaks and
             values are the frequency of each length, sorted by length.
         """
-        counter = Counter(len(streak) for streak in self.streaks)
-        return Counter(dict(sorted(counter.items())))
+        streak_lengths = (len(streak) for streak in self.streaks)
+        length_counts = Counter(streak_lengths)
+        return Counter(dict(sorted(length_counts.items())))
 
     @property
-    def fixed_points(self) -> NonNegativeInt:
+    def fixed_points_count(self) -> NonNegativeInt:
         """
         The number of streaks which are a single element, i.e., are fixed points.
 
         Returns:
-            PositiveInt: The number of streaks which are a single element.
+            NonNegativeInt: The number of fixed points
         """
-        return self.streak_lengths[1]
+        return self.streak_lengths_counter[1]
 
     @property
-    def streak_count(self) -> PositiveInt:
+    def streak_count(self) -> NonNegativeInt:
         """
         The number of streaks in the list of streaks.
 
         Returns:
-            PositiveInt: The number of streaks in the list of streaks.
+            NonNegativeInt: The number of streaks in the list of streaks.
         """
         return len(self.streaks)
 

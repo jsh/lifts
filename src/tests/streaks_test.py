@@ -38,27 +38,27 @@ def test_random_list():
     assert instance.streaks == [[3, 1], [4, 2], [5]]
 
 
-# test streak_lengths property
+# test streak__lengths_counter property
 
 
 def test_empty_streak_list():
     instance = Streaks([])
-    assert instance.streak_lengths == Counter()
+    assert instance.streak_lengths_counter == Counter()
 
 
 def test_singleton_streak_list():
     instance = Streaks([1])
-    assert instance.streak_lengths == Counter({1: 1})
+    assert instance.streak_lengths_counter == Counter({1: 1})
 
 
 def test_multiple_streaks():
     instance = Streaks([4, 5, 6, 3, 1, 2])
-    assert instance.streak_lengths == Counter({1: 1, 3: 1, 2: 1})
+    assert instance.streak_lengths_counter == Counter({1: 1, 3: 1, 2: 1})
 
 
 def test_multiple_streaks_same_length():
     instance = Streaks([5, 6, 3, 4, 1, 2])
-    assert instance.streak_lengths == Counter({2: 3})
+    assert instance.streak_lengths_counter == Counter({2: 3})
 
 
 # test streak_count
