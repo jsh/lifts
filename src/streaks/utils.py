@@ -76,11 +76,6 @@ def main() -> None:
     print(f"{total_streak_length=}, {n_fact * n}")
     print(f" {total_streaks=}, {n_fact * n_harmonic}")
 
-    # for k, count in streak_counts.items():
-    #     if count != stirling(n, k, kind=1):
-    #         print(f"{k}:{count} is not {stirling(n, k, kind=1)}", sys.stderr)
-    #         sys.exit()
-
 
 if __name__ == "__main__":
     main()
