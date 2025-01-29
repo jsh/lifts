@@ -71,15 +71,13 @@ class Streaks:
 
         Args:
             seq (list[int]): The sequence to decompose into streaks
+            winning (bool, optional): Whether to decompose into winning or losing streaks. Defaults to True.
 
         Returns:
             list[list[int]]: A list of streaks
         """
 
-        if winning:
-            cmp = gt
-        else:
-            cmp = lt
+        cmp = gt if winning else lt
 
         if not seq:
             return []
