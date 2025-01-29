@@ -106,6 +106,9 @@ class Streaks:
 
         Each streak is printed on its own line, with elements separated by a
         space. The first element of each streak is formatted in green.
+
+        Returns:
+            None
         """
         for streak in self.streaks:
             print(self.format_streak(streak))
@@ -117,7 +120,10 @@ class Streaks:
         First streak element is in green.
 
         Args:
-            streak (list[int]): The list of ints to print
+            streak (list[int]): The list of integers to format
+
+        Returns:
+            str: The formatted streak as a string
         """
         if not streak:
             return ""
